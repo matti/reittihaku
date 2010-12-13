@@ -1,0 +1,3 @@
+[submodule "lib/reittiopas"]
+	path = lib/reittiopas
+	url = git://github.com/matti/reittiopas.git
