@@ -54,7 +54,7 @@ module Reittihaku
     
     
     def initialize(locations)
-      @locations = locations.map { |l| Reittihaku::Location.new(l) }
+      @locations = locations.map { |l| Location.new(l) }
     end
     
     def best_by(address)
@@ -79,11 +79,11 @@ module Reittihaku
     def resolve_single(l, address)
 
       if address.street == l.name && address.number == l.number
-        l.accuracy = Reittihaku::ACCURACY["Osoite ok"]
+        l.accuracy = ACCURACY["Osoite ok"]
       elsif address.street == l.name && ( address.number.nil? || address.number.empty? )
-        l.accuracy =  Reittihaku::ACCURACY["Osoitenumero puuttui, käytettiin pelkkää kadunnimeä"] 
+        l.accuracy = ACCURACY["Osoitenumero puuttui, käytettiin pelkkää kadunnimeä"] 
       else  
-        l.accuracy = Reittihaku::ACCURACY["Käytettiin samankaltaista kadunnimeä"]
+        l.accuracy = ACCURACY["Käytettiin samankaltaista kadunnimeä"]
       end
 
       return l
@@ -110,7 +110,7 @@ module Reittihaku
       end
 
       l = winner[1]
-      l.accuracy = Reittihaku::ACCURACY["Käytettiin samankaltaisinta kadunnimeä (valinta joukosta)"]
+      l.accuracy = ACCURACY["Käytettiin samankaltaisinta kadunnimeä (valinta joukosta)"]
 
       return l    
     end

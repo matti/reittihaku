@@ -38,10 +38,10 @@ module Reittihaku
     end
     
     def parse
-      id = match(Reittihaku::ADDRESS_MATCHERS[:id])
-      city = match(Reittihaku::ADDRESS_MATCHERS[:city])
-      number = match(Reittihaku::ADDRESS_MATCHERS[:number])
-      street = match(Reittihaku::ADDRESS_MATCHERS[:street])
+      id = match(ADDRESS_MATCHERS[:id])
+      city = match(ADDRESS_MATCHERS[:city])
+      number = match(ADDRESS_MATCHERS[:number])
+      street = match(ADDRESS_MATCHERS[:street])
       
       return {:id => id,
               :city => city,
