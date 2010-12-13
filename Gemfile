@@ -7,3 +7,5 @@ gem 'nokogiri'
 
 gem 'rspec'
 gem 'rspec-core'
+
+gem 'webmock'
