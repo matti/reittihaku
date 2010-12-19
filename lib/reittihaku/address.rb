@@ -23,7 +23,8 @@ module Reittihaku
     end
 
     def to_search_string
-      string = "#{@street} #{@number}"
+      string = "#{@street}"
+      string << " #{@number}" if @number
       string << ", #{@city}" if @city
 
       string

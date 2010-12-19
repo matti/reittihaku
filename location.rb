@@ -2,28 +2,74 @@ require 'lib/reittihaku'
 
 reittiopas = Reittiopas.new(:username => Reittihaku::USER, :password => Reittihaku::PASS)
 
-address = Reittihaku::Address.parse("1;Ulvilantie;Helsinki")
+address_lines_filename = ARGV[0]
+resolved_file_filename = ARGV[1]
 
-locations = reittiopas.location(address.to_search_string)
+raise "USAGE: ruby location.rb address_file.txt resolved_file.txt" unless File.exists?(address_lines_filename) && resolved_file_filename
 
+# Open input and output files
+address_lines = File.read(address_lines_filename)
+resolved_file = File.new(resolved_file_filename, "w")
 
-location_selector = Reittihaku::Location::Selector.new(locations)
+# Parse input addresses as Address objects
+addresses = address_lines.map { |l| Reittihaku::Address.parse(l) }
 
-best_location = location_selector.best_by(address)
+locations = []  # Store all resolved locations
+unresolved = [] # Reittiopas could not find a match for these
 
+addresses.each do |address|
+  
+  debug("resolving: #{address.id} #{address.to_search_string}")
+  all_locations = reittiopas.location(address.to_search_string) # Everything what Reittiopas finds with our search
+  Reittihaku::Location::Sanitizer.to_latin1(all_locations)
+  
+  location_selector = Reittihaku::Location::Selector.new(all_locations, address)
+  
+  best_location = location_selector.best_location  # Select one out of all possible results
+  
+  if best_location
+    locations << best_location
+    
+    line = ""
+    
+    # Build the result line 
+    line_parts = [ address.id, best_location.x, best_location.y,
+                   address.street, address.number, address.city,
+                   best_location.name, best_location.number, best_location.city,
+                   best_location.accuracy, best_location.type, best_location.code, best_location.category,
+                   best_location.latitude, best_location.longitude ]
 
-line = ""
+    # And join each part with ";"
+    line_parts.each do |part|
+      line << "#{part}" << ";"    
+    end
 
-line_parts = [ address.id, best_location.x, best_location.y,
-               address.street, address.number, address.city,
-               best_location.name, best_location.number, best_location.city,
-               best_location.accuracy, best_location.category,
-               best_location.latitude, best_location.longitude]
+    resolved_file.write(line + "\n")
+    
+  else
+    unresolved << address   # If no location was found
+  end
 
-line_parts.each do |part|
-  line << "#{part}" << ";"    
 end
- 
-puts line
 
+resolved_file.close
+
+# Write statistics to stdout
+
+
+puts "\n\nUnresolved"
+puts "-"*80
+unresolved.each do |address|
+    puts "#{address.id};#{address.street};#{address.number};#{address.city}"
+end
+puts "\nTotal: #{unresolved.size}"
+puts "\n"
+
+puts "\nResolved"
+puts "-"*80
+
+puts "\nTotal: #{locations.size}"
+puts ""
+puts "Wrote to #{resolved_file.path}"
+puts ""
 

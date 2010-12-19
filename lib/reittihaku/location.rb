@@ -2,11 +2,12 @@ module Reittihaku
   
   class Location
     
-    attr_reader :location
+    attr_reader :location, :address
     attr_accessor :accuracy
     
-    def initialize(reittiopas_location)
+    def initialize(reittiopas_location, address)
       @location = reittiopas_location
+      @address = address
     end
 
     def name
@@ -46,29 +47,93 @@ module Reittihaku
       end
     end
     
+    def type
+      @location.respond_to?(:type) ? @location.type : nil
+    end
+    
+    def code
+      @location.respond_to?(:code) ? @location.code : nil
+    end
   end
   
+  class Location::Builder
+    
+    def self.build(string)
+      
+      parts = string.split(';')
+
+      fields = :id, :x, :y,
+               :query_street, :query_number, :query_city,
+               :name1, :number, :city,
+               :accuracy, :type, :code, :category,
+               :lat, :lon
+
+      attributes = {}
+      fields.each_with_index { |a,i| attributes[a] = parts[i] if parts[i] != "" }
+      
+      xml_attributes = attributes.clone
+      extra_fields = :id, :query_street, :query_number, :query_city, :accuracy 
+      xml_attributes.each_key { |key| xml_attributes.delete(key) if extra_fields.include? key }
+
+      builder = Nokogiri::XML::Builder.new do |xml|
+          xml.LOC(xml_attributes)
+      end
+      
+      Location.new(Reittiopas::Location.parse(Nokogiri::XML(builder.to_xml).elements.first),
+                   Address.new(:id => attributes[:id],
+                               :street => attributes[:query_street],
+                               :number => attributes[:query_number],
+                               :city => attributes[:city]) )
+    end
+  end
   
+  module Location::Sanitizer
+
+    def self.utf8_to_latin1(string)
+      i = Iconv.new("LATIN1//TRANSLIT//IGNORE", "UTF8")
+      return i.iconv(string)
+    end
+
+    def self.latin1_to_utf8(string)
+      i = Iconv.new("UTF8", "LATIN1//TRANSLIT//IGNORE")
+      return i.iconv(string)
+    end
+    
+    def self.to_latin1(locations)
+        
+        # substitutions = { "Ä" => "ä",
+        #                          "Ö" => "ö",
+        #                          "Å" => "å"}
+        #                          
+        Array(locations).each do |location|
+          location.name = utf8_to_latin1(location.name)
+          #substitutions.each { |k,v| location.name = location.name.gsub(k,v) }
+        end
+        
+    end
+    
+  end
   
   class Location::Selector
     
     
-    def initialize(locations)
-      @locations = locations.map { |l| Location.new(l) }
+    def initialize(reittiopas_locations, address)
+      @address = address
+      @locations = reittiopas_locations.map { |l| Location.new(l, @address.id ) }
     end
     
-    def best_by(address)
+    def best_location
       
       best = nil
 
       if @locations.size == 1
-        best = resolve_single(@locations.first, address)
+        best = resolve_single(@locations.first)
       elsif @locations.size > 1
-        best = resolve_multiple(@locations, address)
+        best = resolve_multiple(@locations)
       end
       
       
-      best = nil if best && best.x.nil? || best.y.nil?
+      best = nil if best && ( best.x.nil? || best.y.nil? )
       
       return best
     end
@@ -76,11 +141,11 @@ module Reittihaku
 
     private
 
-    def resolve_single(l, address)
+    def resolve_single(l)
 
-      if address.street == l.name && address.number == l.number
+      if @address.street == l.name && @address.number == l.number
         l.accuracy = ACCURACY["Osoite ok"]
-      elsif address.street == l.name && ( address.number.nil? || address.number.empty? )
+      elsif @address.street == l.name && ( @address.number.nil? || @address.number == "" )
         l.accuracy = ACCURACY["Osoitenumero puuttui, käytettiin pelkkää kadunnimeä"] 
       else  
         l.accuracy = ACCURACY["Käytettiin samankaltaista kadunnimeä"]
@@ -89,11 +154,11 @@ module Reittihaku
       return l
     end
 
-    def resolve_multiple(locations, address)
+    def resolve_multiple(locations)
 
       winner = [-1,locations.first]
 
-      name_to_match = address.street
+      name_to_match = @address.street
 
       locations.each do |l|
         score = 0
@@ -114,6 +179,9 @@ module Reittihaku
 
       return l    
     end
+    
+    
+    
   end
   
   

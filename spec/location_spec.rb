@@ -83,4 +83,40 @@ describe Reittihaku::Location do
   end
   
 
+
+  describe Reittihaku::Location::Selector do
+  
+    before(:all) do
+      @locations = Marshal.load(File.read("spec/assets/locations_olympia.marshal"))
+    
+      @selector = Reittihaku::Location::Selector.new(@locations)
+    end
+  
+    it "should return best" do
+      address = Reittihaku::Address.parse("1;Olympia")
+
+      @selector.best_by(address).location.should == @locations.first
+    end
+
+  end
+  
+  
+  
+  describe Reittihaku::Location::Builder do
+    
+    before(:all) do
+      @location = Reittihaku::Location::Builder.build("2;2548199;6677769;ulvilantie;19;helsinki;ulvilantie;19;helsinki;1;900;;street;60.20861;24.86607;")
+    end
+    
+    specify { @location.x.should == 2548199 }
+    specify { @location.y.should == 6677769 }
+    specify { @location.name.should == "ulvilantie" }
+    specify { @location.city.should == "helsinki" }
+    specify { @location.category.should == "street" }
+    specify { @location.code.should be_nil }
+    specify { @location.number.should == 19 }
+    specify { @location.latitude.should == 60.20861 }
+    specify { @location.longitude.should == 24.86607 }
+    
+  end
 end
