@@ -101,13 +101,13 @@ module Reittihaku
     
     def self.to_latin1(locations)
         
-        # substitutions = { "Ä" => "ä",
-        #                          "Ö" => "ö",
-        #                          "Å" => "å"}
-        #                          
+        substitutions = { "Ä" => "ä",
+                          "Ö" => "ö",
+                          "Å" => "å"}
+                                  
         Array(locations).each do |location|
           location.name = utf8_to_latin1(location.name)
-          #substitutions.each { |k,v| location.name = location.name.gsub(k,v) }
+          substitutions.each { |k,v| location.name = location.name.gsub(k,v) }
         end
         
     end

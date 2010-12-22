@@ -1,34 +1,7 @@
+require 'rubygems'
+require 'vendor/reittiopas/lib/reittiopas'
 require 'lib/reittihaku'
 
-# TODO: pois
-require 'lib/reittiopas/lib/reittiopas'
-
-class Reittiopas::Routing::Route
-  
-  def walks_total_time
-    time = 0.0
-    times = walks.map(&:time)
-    times.each { |t| time += t.to_f }
-    
-    return time
-  end
-  
-  def walks_total_distance
-    distance = 0.0
-    distances = walks.map(&:distance)
-    distances.each { |d| distance += d.to_f}
-    
-    return distance
-  end
-  
-end
-
-
-class DateTime
-  def to_s
-    strftime('%Y-%m-%d %H:%M:%S')
-  end
-end
 
 
 reittiopas = Reittiopas.new(:username => Reittihaku::USER, :password => Reittihaku::PASS)
@@ -53,10 +26,10 @@ output_file = File.open(output_filename, "w")
 
 no_routes = []
 
-ats = ["0900"]
+
 from_locations.each do |from|
 to_locations.each do |to|
-ats.each do |at|
+Reittihaku::ROUTING::AT_TIMES.each do |at|
 
     debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string}) at #{at}")
     
@@ -73,57 +46,31 @@ ats.each do |at|
     line = ""
     
     
-    fields = [ from.address.id, to.address.id,
-               from.x, from.y,
-               from.address.street, from.address.number, from.address.city,
-               from.name, from.number, from.city,
-               from.accuracy,
-               to.x,to.y,
-               to.name, to.number, to.city,
-               to.accuracy,
-               route.time,
-               route.walks_total_time,
-               route.walks_total_distance, 
-               route.lines.size ]
-    
-    summary_fields = [route.parts.first.arrival.date_time.to_s,
-                      route.walks.first.distance,
-                      (route.lines.size > 0 ? route.lines.first.stops.first.names[Reittihaku::LANG_CODE] : nil),
-                      (route.lines.size > 0 ? route.lines.first.stops.first.code : nil),
-                      (route.lines.size > 0 ? route.lines.last.stops.last.names[Reittihaku::LANG_CODE] : nil),
-                      (route.lines.size > 0 ? route.lines.last.stops.last.code : nil),
-                      route.walks.last.distance,
-                      route.parts.last.arrival.date_time.to_s]
+    fields = eval Reittihaku::ROUTING::FIELDS    
+    summary_fields = eval Reittihaku::ROUTING::SUMMARY_FIELDS
                    
                    
-     part_fields = []
+    part_fields = []
 
-     route.parts.each_with_index do |part,i|
-       # First walk is never included as part
-       next if part.is_a?(Reittiopas::Routing::Walk) && i == 0 || i == route.parts.size-1
+    route.parts.each_with_index do |part,i|
+      # First walk is never included as part
+      next if part.is_a?(Reittiopas::Routing::Walk) && i == 0 || i == route.parts.size-1
 
-       if part.is_a?(Reittiopas::Routing::Walk)
-         part_fields << "WALK"
-         part_fields << (part.stops.size > 0 ? part.stops.first.names[Reittihaku::LANG_CODE] : nil )
-         part_fields << (part.stops.size > 0 ? part.stops.first.code : nil )
-         
-         part_fields << (part.stops.size > 0 ? part.stops.last.names[Reittihaku::LANG_CODE] : nil )
-         part_fields << (part.stops.size > 0 ? part.stops.last.code : nil )
-         part_fields << part.distance
-       end
+      if part.is_a?(Reittiopas::Routing::Walk)
+        part_fields << "WALK"
+        eval Reittihaku::ROUTING::WALK_FIELDS
+      end
 
-       if part.is_a?(Reittiopas::Routing::Line)
-         part_fields << "LINE"
-         part_fields << part.code
-         part_fields << part.stops.first.arrival.date_time.to_s
-         part_fields << part.distance
-       end
+      if part.is_a?(Reittiopas::Routing::Line)
+        part_fields << "LINE"
+        eval Reittihaku::ROUTING::LINE_FIELDS
+      end
 
-     end
+    end
 
-     all_fields = (fields + summary_fields + part_fields)
+    all_fields = (fields + summary_fields + part_fields)
 
-     output_file.write(all_fields.join(";"))
+    output_file.write(all_fields.join(";") + "\n")
 end
 end
 end
