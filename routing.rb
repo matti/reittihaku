@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'vendor/reittiopas/lib/reittiopas'
 require 'lib/reittihaku'
 
 

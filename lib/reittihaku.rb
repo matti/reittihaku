@@ -76,6 +76,8 @@ end
 
 
 require 'iconv'
+require 'vendor/reittiopas/lib/reittiopas'
+
 
 $: << File.expand_path(File.dirname(__FILE__))
 
