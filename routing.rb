@@ -94,6 +94,7 @@ no_routes.each do |from_to_at|
   puts "from: #{from.address.to_search_string} to: #{to.address.to_search_string} at #{at}"
 end
 
+puts "\n\nTotal: #{no_routes.size}"
 puts "\n\n"
 puts "-"*80
 puts "DONE"
