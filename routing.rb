@@ -9,7 +9,8 @@ from_location_lines_filename = ARGV[0]
 to_location_lines_filename = ARGV[1]
 output_filename = ARGV[2]
 
-raise "USAGE: ruby routing.rb from_locations.txt to_locations.txt output.txt" unless from_location_lines_filename && to_location_lines_filename && output_filename
+raise "USAGE: ruby routing.rb from_locations.txt to_locations.txt output.txt" unless from_location_lines_filename && to_location_lines_filename && output_filename &&
+                                                                                     File.exists?(from_location_lines_filename) && File.exists?(to_location_lines_filename)
 
 
 from_location_lines = File.read(from_location_lines_filename)

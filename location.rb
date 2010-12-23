@@ -6,7 +6,8 @@ reittiopas = Reittiopas.new(:username => Reittihaku::USER, :password => Reittiha
 address_lines_filename = ARGV[0]
 resolved_file_filename = ARGV[1]
 
-raise "USAGE: ruby location.rb address_file.txt resolved_file.txt" unless File.exists?(address_lines_filename) && resolved_file_filename
+raise "USAGE: ruby location.rb address_file.txt resolved_file.txt" unless address_lines_filename && resolved_file_filename && 
+                                                                          File.exists?(address_lines_filename)
 
 address_lines = File.read(address_lines_filename)
 resolved_file = File.new(resolved_file_filename, "w")
