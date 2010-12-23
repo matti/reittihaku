@@ -3,33 +3,31 @@ require 'reittihaku'
 describe Reittihaku::Location do
   
   describe "creation" do
-
-    it "should encapsulate reittiopas location" do
-      reittiopas_location = mock(Reittiopas::Location)
-      location = Reittihaku::Location.new(reittiopas_location)
-
-      location.location.should == reittiopas_location
-    end
     
-    it "should have accuracy" do
-      reittiopas_location = mock(Reittiopas::Location)
-      location = Reittihaku::Location.new(reittiopas_location)
+    before(:all) do
+      @reittiopas_location = RSpec::Mocks::Mock.new(Reittiopas::Location)
+      @reittihaku_address = RSpec::Mocks::Mock.new(Reittihaku::Address)
       
-      location.accuracy.should be_nil
+      @location = Reittihaku::Location.new(@reittiopas_location, @reittihaku_address)
     end
-
+   
+    specify { @location.location.should == @reittiopas_location }
+    specify { @location.accuracy.should be_nil }
+    
+    
     it "should downcase fields" do
-      reittiopas_location = mock(Reittiopas::Location)
-      reittiopas_location.stub!(:name).and_return("NAME")
-      reittiopas_location.stub!(:city).and_return("CITY")
+      field_location = @location.clone
       
-      location = Reittihaku::Location.new(reittiopas_location)
+      field_location.stub!(:name).and_return("NAME")
+      field_location.stub!(:city).and_return("CITY")
+      
+      location = Reittihaku::Location.new(field_location, @reittihaku_address)
       
       location.name.should == "name"
       location.city.should == "city"
     end
 
-    it "should have fields" do
+    it "should have coordinate fields" do
       reittiopas_wgs = mock(Reittiopas::Location::Coordinates::WGS)
       reittiopas_wgs.stub!(:latitude).and_return(60.1234)
       reittiopas_wgs.stub!(:longitude).and_return(24.1234)
@@ -48,10 +46,8 @@ describe Reittihaku::Location do
       reittiopas_location.stub!(:name).and_return("name")
       reittiopas_location.stub!(:city).and_return("city")
       reittiopas_location.stub!(:number).and_return(8)
-    
       
-      location = Reittihaku::Location.new(reittiopas_location)
-      
+      location = Reittihaku::Location.new(reittiopas_location, @reittihaku_address)
       location.name.should == "name"
       location.city.should == "city"      
       location.number.should == 8
@@ -75,7 +71,7 @@ describe Reittihaku::Location do
         reittiopas_location = mock(klass)
         reittiopas_location.stub!(:class).and_return(klass.to_s)
         
-        location = Reittihaku::Location.new(reittiopas_location)
+        location = Reittihaku::Location.new(reittiopas_location, @reittihaku_address)
         location.category.should == types[i]
       end
 
@@ -91,8 +87,7 @@ describe Reittihaku::Location do
       address = Reittihaku::Address.parse("1;Olympia")
       selector = Reittihaku::Location::Selector.new(locations, address)
 
-      
-      @selector.best_by(address).location.should == locations.first
+      selector.best_location.location.should == locations.first
     end
 
   end

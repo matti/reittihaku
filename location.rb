@@ -17,9 +17,6 @@ addresses = address_lines.map { |l| Reittihaku::Address.parse(l) }
 locations = []  # To store all resolved locations
 unresolved = [] # To store all locations that Reittiopas could not resolve
 
-resolved_file.write Reittihaku::LOCATING::HEADER
-resolved_file.write "\n"
-
 addresses.each do |address|
   
   debug("resolving: #{address.id} #{address.to_search_string}")
@@ -37,7 +34,7 @@ addresses.each do |address|
       
     # Build the result line 
     line = ""
-    line_parts = eval Reittihaku::LOCATING::FIELDS
+    line_parts = eval "[#{Reittihaku::LOCATING::FIELDS}]"
 
     # And join each part with ";"
     line_parts.each { |part| line << "#{part}" << ";" }    
