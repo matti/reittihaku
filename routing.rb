@@ -50,7 +50,6 @@ at_times.each do |at|
       
       line = ""
     
-    
       fields = eval "[#{Reittihaku::ROUTING::FIELDS}]"    
       summary_fields = eval "[#{Reittihaku::ROUTING::SUMMARY_FIELDS}]"
                    
