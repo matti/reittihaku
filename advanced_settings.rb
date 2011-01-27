@@ -66,9 +66,14 @@ module Reittihaku
     WALK_FIELDS = 'part_fields << (part.stops.size > 0 ? part.stops.first.names[Reittihaku::LANG_CODE] : nil )
                    part_fields << (part.stops.size > 0 ? part.stops.first.code : nil )
  
-                   part_fields << (part.stops.size > 0 ? part.stops.last.names[Reittihaku::LANG_CODE] : nil )
-                   part_fields << (part.stops.size > 0 ? part.stops.last.code : nil )
-                   part_fields << part.distance'
+                   if part.stops.size == 1
+                     part_fields << ( part.map_locations.size > 0 ? part.map_locations.last.name : nil )
+                     part_fields << "maploc"
+                   else
+                     part_fields << (part.stops.size > 0 ? part.stops.last.names[Reittihaku::LANG_CODE] : nil )
+                     part_fields << (part.stops.size > 0 ? part.stops.last.code : nil )
+                     part_fields << part.distance
+                   end'
   
     # Columns for each line
     LINE_FIELDS = 'part_fields << part.code
