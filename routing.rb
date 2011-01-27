@@ -33,9 +33,11 @@ from_locations.each do |from|
 to_locations.each do |to|
 at_times.each do |at|
 
+    routing_options.merge!({"time" => at})
+    
     debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string}) at #{at}")
     
-    routes = reittiopas.routing(from.location, to.location, routing_options)    
+    routes = reittiopas.routing(from.location, to.location, routing_options)
     
     if routes.size == 0
       no_routes << [from, to, at] 
