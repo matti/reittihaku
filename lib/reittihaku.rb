@@ -1,5 +1,7 @@
 
+require 'advanced_settings.rb'
 require 'settings.rb'
+
 
 require 'iconv'
 require 'vendor/reittiopas/lib/reittiopas'
