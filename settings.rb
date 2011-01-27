@@ -6,6 +6,7 @@ module Reittihaku::ROUTING
 
   
   # Pass following options for Reittiopas
+  # 'nil' means "use whatever reittiopas uses as default", e.g. use_bus => nil means USE.
   
   OPTIONS = {
     "time" => nil,        # hhmm (overwrites the times specified in AT_TIMES !)

@@ -51,7 +51,7 @@ module Reittihaku
               route.lines.size'
    
     # Next columns
-    SUMMARY_FIELDS = 'route.parts.first.arrival.date_time.to_s,
+    SUMMARY_FIELDS = 'route.parts.first.departure.date_time.to_s,
                       route.walks.first.distance,
                       (route.lines.size > 0 ? route.lines.first.stops.first.names[Reittihaku::LANG_CODE] : nil),
                       (route.lines.size > 0 ? route.lines.first.stops.first.code : nil),
@@ -70,7 +70,7 @@ module Reittihaku
   
     # Columns for each line
     LINE_FIELDS = 'part_fields << part.code
-                   part_fields << part.stops.first.arrival.date_time.to_s
+                   part_fields << part.stops.first.departure.date_time.to_s
                    part_fields << part.distance'
   
   end
@@ -80,8 +80,8 @@ module Reittihaku
   ADDRESS_MATCHERS = {
     :id => /^\s*([^;]*)\;/,                 # "id;..."
     :city => /^[^;]*\;[^;]*\;([^;]*)/,      # "...;...;city"
-    :number => /^[^;]*\;\D*(\d+)/,          # "...;...;8"
     :street => /^[^;]*\;([^;|\d]*)/,        # "...;street;..."
+    :number => /^[^;]*\;\D*(\d+)/,          # "...;...8"
     }
 
 end
