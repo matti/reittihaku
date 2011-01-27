@@ -1,7 +1,20 @@
 module Reittihaku
   
-  USER=File.read("username")    # Reittiopas username
-  PASS=File.read("password")    # Reittiopas password
+  begin
+    USER=File.read("username")    # Reittiopas username
+  rescue
+    puts "Could not read file 'username'"
+    exit 1
+  end
+  
+  begin
+    PASS=File.read("password")    # Reittiopas password
+  rescue
+    puts "Could not read file 'password'"
+    exit 1
+  end
+  
+  
   
   # How to parse id, street/name, number and city for location.rb
   ADDRESS_MATCHERS = {
