@@ -109,6 +109,7 @@ describe Reittihaku::Location do
     specify { @location.number.should == 19 }
     specify { @location.latitude.should == 60.20861 }
     specify { @location.longitude.should == 24.86607 }
+    specify { @location.address.accuracy.should == 1 }
     
   end
 end

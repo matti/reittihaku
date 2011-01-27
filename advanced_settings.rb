@@ -21,7 +21,7 @@ module Reittihaku
   module LOCATING
     
     # location.rb resulting location lines
-        
+          
     FIELDS = 'address.id, best_location.x, best_location.y,
               address.street, address.number, address.city,
               best_location.name, best_location.number, best_location.city,
@@ -35,17 +35,19 @@ module Reittihaku
 
     # Columns if no route was found
     FIELDS_FAILED = 'from.address.id, to.address.id, "NO ROUTE"'
-    
+
     # The first columns
     FIELDS = 'from.address.id, to.address.id, route_index, at,
               from.x, from.y,
               from.address.street, from.address.number, from.address.city,
               from.name, from.number, from.city,
-              from.accuracy,
+              from.address.accuracy,
               to.x, to.y,
+              to.address.street, to.address.number, to.address.city,
               to.name, to.number, to.city,
-              to.accuracy,
+              to.address.accuracy,
               route.time,
+              route.distance,
               route.walks_total_time,
               route.walks_total_distance, 
               route.lines.size'

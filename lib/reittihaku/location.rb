@@ -54,6 +54,7 @@ module Reittihaku
     def code
       @location.respond_to?(:code) ? @location.code : nil
     end
+    
   end
   
   class Location::Builder
@@ -83,7 +84,8 @@ module Reittihaku
                    Address.new(:id => attributes[:id],
                                :street => attributes[:query_street],
                                :number => attributes[:query_number],
-                               :city => attributes[:city]) )
+                               :city => attributes[:city],
+                               :accuracy => attributes[:accuracy]) )
     end
   end
   

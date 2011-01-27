@@ -2,13 +2,14 @@ module Reittihaku
 
   class Address
       
-    attr_reader :id, :street, :number, :city
+    attr_reader :id, :street, :number, :city, :accuracy
   
     def initialize(opts)
       @id = opts[:id]
       @street = sanitize(opts[:street])
       @number = opts[:number].to_i if opts[:number]
       @city = sanitize(opts[:city])
+      @accuracy = opts[:accuracy].to_i if opts[:accuracy]
     end
   
     def self.parse(string)

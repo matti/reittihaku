@@ -2,6 +2,11 @@ require 'reittihaku'
 
 describe Reittihaku::Address do
   
+  describe "attributes" do
+    subject { Reittihaku::Address.parse("1;a") }
+    it { should respond_to(:accuracy) }
+  end
+  
   describe "from line" do
 
     before(:all) do
