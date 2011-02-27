@@ -21,7 +21,5 @@ module Reittihaku
       "walkcost" => nil,
     }
     
-    
-    FIELDS = 'from.address.id, to.address.id'
   end
 end

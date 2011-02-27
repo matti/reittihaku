@@ -28,6 +28,8 @@ output_file = File.open(output_filename, "w")
 
 no_routes = []
 
+route_index = 1
+
 from_locations.each do |from|
 to_locations.each do |to|
     debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string})")
@@ -44,17 +46,19 @@ to_locations.each do |to|
     
     route = routes.first
     
-    coordinates = []
+    coordinate_pairs = []
     walk = route.parts[1]
     walk.sections.each do |point_or_map_location|
-      coordinates << point_or_map_location.x
-      coordinates << point_or_map_location.y
+      coordinate_pairs << [ point_or_map_location.x, point_or_map_location.y ]
     end
 
-    fields = eval "[#{Reittihaku::WALKER::FIELDS}]"    
-    from_to_and_coordinates = (fields + coordinates)
-    output_file.write(from_to_and_coordinates.join(";") + "\n")
     
+    coordinate_pairs.each_cons(2) do |two_pairs|
+       line = [from.address.id, to.address.id, route_index, two_pairs] 
+       output_file.write(line.join(";") + "\n")
+    end
+    
+    route_index = route_index + 1
 end
 end
 
