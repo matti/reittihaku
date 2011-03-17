@@ -34,7 +34,17 @@ from_locations.each do |from|
 to_locations.each do |to|
     debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string})")
     
-    routes = reittiopas.routing(from.location, to.location, routing_options)
+    routes = nil
+    while routes.nil? do
+      begin
+        routes = reittiopas.routing(from.location, to.location, routing_options)
+      rescue Timeout::Error
+        debug("timeout")
+      rescue
+        debug("some network problems occured, lets try again ...")
+        sleep 5
+      end
+    end
     
     if routes.size == 0
       no_routes << [from, to, at] 
