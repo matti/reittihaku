@@ -40,6 +40,9 @@ at_times.each do |at|
         routes = reittiopas.routing(from.location, to.location, average_options)
       rescue Timeout::Error
         debug("timeout")
+      rescue Reittiopas::AccessError
+        debug("invalid credentials")
+        exit
       rescue
         debug("some network problems occured, lets try again ...")
         sleep 5

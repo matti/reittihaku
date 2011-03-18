@@ -28,6 +28,9 @@ addresses.each do |address|
       all_locations = reittiopas.location(address.to_search_string) # Everything what Reittiopas finds with our search
     rescue Timeout::Error
       debug("timeout")
+    rescue Reittiopas::AccessError
+      debug("invalid credentials")
+      exit
     rescue
       debug("some network problems occured, lets try again ...")
       sleep 5
