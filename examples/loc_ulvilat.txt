@@ -1,3 +1,1 @@
-1;2548942;6677461;ulvilantie;;helsinki;ulvilantie;;helsinki;5;900;;street;60.20575;24.87939;
 2;2548199;6677769;ulvilantie;19;helsinki;ulvilantie;19;helsinki;1;900;;street;60.20861;24.86607;
-3;2548199;6677769;ulvilantie;19;;ulvilantie;19;helsinki;1;900;;street;60.20861;24.86607;
