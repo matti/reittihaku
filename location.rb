@@ -22,20 +22,25 @@ addresses.each do |address|
   
   debug("resolving: #{address.id} #{address.to_search_string}")
 
-  all_locations = nil
-  while all_locations.nil? do
-    begin
-      all_locations = reittiopas.location(address.to_search_string) # Everything what Reittiopas finds with our search
-    rescue Timeout::Error
-      debug("timeout")
-    rescue Reittiopas::AccessError
-      debug("invalid credentials")
-      exit
-    rescue
-      debug("some network problems occured, lets try again ...")
+  retries = 0
+  begin
+    all_locations = reittiopas.location(address.to_search_string) # Everything what Reittiopas finds with our search
+  rescue Timeout::Error
+    debug("timeout")
+    retry
+  rescue Reittiopas::AccessError
+    raise "invalid credentials"
+  rescue
+    debug("some network problems occured, lets try again ...")
+    if retries < 10
       sleep 5
+      retries +=1
+      retry
+    else
+      raise "network was down or unreachable"
     end
   end
+
   Reittihaku::Location::Sanitizer.to_latin1(all_locations)      # Convert names to latin-1
   
   location_selector = Reittihaku::Location::Selector.new(all_locations, address)

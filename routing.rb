@@ -35,18 +35,22 @@ at_times.each do |at|
     
     debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string}) at #{at}")
     
-    routes = nil
-    while routes.nil? do
-      begin
-        routes = reittiopas.routing(from.location, to.location, routing_options)
-      rescue Timeout::Error
-        debug("timeout")
-      rescue Reittiopas::AccessError
-        debug("invalid credentials")
-        exit
-      rescue
-        debug("some network problems occured, lets try again ...")
+    retries = 0
+    begin
+      routes = reittiopas.routing(from.location, to.location, routing_options)
+    rescue Timeout::Error
+      debug("timeout")
+      retry
+    rescue Reittiopas::AccessError
+      raise "invalid credentials"
+    rescue
+      debug("some network problems occured, lets try again ...")
+      if retries < 10
         sleep 5
+        retries +=1
+        retry
+      else
+        raise "network was down or unreachable"
       end
     end
 
