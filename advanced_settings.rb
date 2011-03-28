@@ -21,7 +21,12 @@ module Reittihaku
   module LOCATING
     
     # location.rb resulting location lines
-          
+    FIELD_NAMES = ["id", "resolved x", "resolved y",
+                   "query street", "query street number", "query street city",
+                   "resolved name", "resolved street number", "resolved city",
+                   "accuracy", "type", "code", "category",
+                   "latitude", "longitude"]
+                   
     FIELDS = 'address.id, best_location.x, best_location.y,
               address.street, address.number, address.city,
               best_location.name, best_location.number, best_location.city,
@@ -37,7 +42,21 @@ module Reittihaku
     FIELDS_FAILED = 'from.address.id, to.address.id, "NO ROUTE"'
 
     # The first columns
-    FIELDS = 'from.address.id, to.address.id, route_index, at,
+    FIELD_NAMES = ["from id", "to id", "fromid_toid", "route number", "at",
+                   "from x", "from y",
+                   "from address street", "from address number", "from address city",
+                   "from location name", "from location number", "from location city",
+                   "from address accuracy",
+                   "to x", "to y",
+                   "to address street", "to address number", "to address city",
+                   "to address accuracy",
+                   "route time",
+                   "route distance",
+                   "route walks total time",
+                   "route walks total distance",
+                   "route total lines"]
+                   
+    FIELDS = 'from.address.id, to.address.id, (from.address.id.to_s+"_"+to.address.id.to_s), route_index, at,
               from.x, from.y,
               from.address.street, from.address.number, from.address.city,
               from.name, from.number, from.city,
@@ -53,6 +72,16 @@ module Reittihaku
               route.lines.size'
    
     # Next columns
+    
+    SUMMARY_FIELD_NAMES = ["departure datetime",
+                           "first walk distance",
+                           "first stop name",
+                           "first stop code",
+                           "last stop name",
+                           "last stop code",
+                           "last walk distance",
+                           "arrival datetime"]
+                           
     SUMMARY_FIELDS = 'route.parts.first.departure.date_time.to_s,
                       route.walks.first.distance,
                       (route.lines.size > 0 ? route.lines.first.stops.first.names[Reittihaku::LANG_CODE] : nil),
@@ -82,6 +111,12 @@ module Reittihaku
   
   end
 
+  module WALKER
+    
+    WALKER_FIELD_NAMES = ["from id", "to id", "fromid_toid", "route number", "x1", "y1", "x2", "y2"]
+    WALKER_FIELDS = 'from.address.id, to.address.id, from.address.id.to_s+"_"+to.address.id.to_s, route_index, two_pairs'
+    
+  end
   
   # How to parse id, street/name, number and city for location.rb
   ADDRESS_MATCHERS = {

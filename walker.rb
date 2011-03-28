@@ -25,6 +25,9 @@ routing_options = Reittihaku::WALKER::OPTIONS.delete_if { |k,v| v.nil? }
 
 
 output_file = File.open(output_filename, "w")
+header = Reittihaku::WALKER::WALKER_FIELD_NAMES.join(";")+"\n"
+output_file.write(header)
+
 
 no_routes = []
 
@@ -71,7 +74,7 @@ to_locations.each do |to|
 
     
     coordinate_pairs.each_cons(2) do |two_pairs|
-       line = [from.address.id, to.address.id, route_index, two_pairs] 
+       line = eval("[#{Reittihaku::WALKER::WALKER_FIELDS}]")
        output_file.write(line.join(";") + "\n")
     end
     

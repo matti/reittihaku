@@ -11,6 +11,9 @@ raise "USAGE: ruby location.rb address_file.txt resolved_file.txt" unless addres
 
 address_lines = File.read(address_lines_filename)
 resolved_file = File.new(resolved_file_filename, "w")
+header = Reittihaku::LOCATING::FIELD_NAMES.join(";") + "\n"
+resolved_file.write(header)
+
 
 # Parse input addresses as Address objects
 addresses = address_lines.map { |l| Reittihaku::Address.parse(l) }
