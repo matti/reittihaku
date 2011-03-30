@@ -7,6 +7,11 @@ class << Hash
   end
 end
 
+def average field_name, values
+  formatted_values = values.map {|r| r[field_name].to_f}
+  "%.3f" % (formatted_values.inject {|sum, el| sum + el} / formatted_values.size)
+end
+
 reittiopas = Reittiopas.new(:username => Reittihaku::USER, :password => Reittihaku::PASS)
 
 input_filename = ARGV[0]
@@ -63,14 +68,15 @@ data.each_pair do |k,v|
 
   result_hash[:count] = v.length
 
-  avg_route_time = nil
-  avg_route_distance = nil
-  avg_start_walking_time = nil
-  avg_end_walking_time = nil
-  avg_route_walks_total_time = nil
-  avg_start_walking_distance = nil
-  avg_end_walking_distance = nil
-  avg_route_walks_total_distance = nil
+  result_hash[:avg_route_time] = average :route_time, v
+  result_hash[:avg_total_route_time] = average :total_route_times, v
+  result_hash[:avg_route_distance] = average :route_distance, v
+  result_hash[:avg_start_walking_time] = average :first_walk_time, v
+  result_hash[:avg_end_walking_time] = average :last_walk_time, v
+  result_hash[:avg_route_walks_total_time] = average :route_walks_total_time, v
+  result_hash[:avg_start_walking_distance] = average :first_walk_distance, v
+  result_hash[:avg_end_walking_distance] = average :last_walk_distance, v
+  result_hash[:avg_route_walks_total_distance] = average :route_walks_total_distance, v
   avg_swaps = nil
   used_bus = nil
   used_tram = nil

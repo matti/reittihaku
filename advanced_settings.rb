@@ -74,20 +74,24 @@ module Reittihaku
     # Next columns
     
     SUMMARY_FIELD_NAMES = ["departure datetime",
+                           "first walk time",
                            "first walk distance",
                            "first stop name",
                            "first stop code",
                            "last stop name",
                            "last stop code",
+                           "last walk time",
                            "last walk distance",
                            "arrival datetime"]
                            
     SUMMARY_FIELDS = 'route.parts.first.departure.date_time.to_s,
+                      route.walks.first.time,
                       route.walks.first.distance,
                       (route.lines.size > 0 ? route.lines.first.stops.first.names[Reittihaku::LANG_CODE] : nil),
                       (route.lines.size > 0 ? route.lines.first.stops.first.code : nil),
                       (route.lines.size > 0 ? route.lines.last.stops.last.names[Reittihaku::LANG_CODE] : nil),
                       (route.lines.size > 0 ? route.lines.last.stops.last.code : nil),
+                      route.walks.last.time,
                       route.walks.last.distance,
                       route.parts.last.arrival.date_time.to_s'
     
@@ -120,11 +124,11 @@ module Reittihaku
 
   module AVERAGE
 
-    INPUT_FIELDS = ['from_id', 'to_id', 'fromid_toid', 'route_index', 'at', 'from_x', 'from_y', 'from_address_street', 'from_address_number', 'from_address_city', 'from_name', 'from_number', 'from_city', 'from_address_accuracy', 'to_x', 'to_y', 'to_address_street', 'to_address_number', 'to_address_city', 'to_name', 'to_number', 'to_city', 'to_address_accuracy', 'route_time', 'route_distance', 'route_walks_total_time', 'route_walks_total_distance', 'route_lines', 'departure_datetime', 'first_walk_distance', 'first_stop_name', 'first_stop_code', 'last_stop_name', 'last_stop_code', 'walks_last_distance', 'arrival_datetime']
+    INPUT_FIELDS = ['from_id', 'to_id', 'fromid_toid', 'route_index', 'at', 'from_x', 'from_y', 'from_address_street', 'from_address_number', 'from_address_city', 'from_name', 'from_number', 'from_city', 'from_address_accuracy', 'to_x', 'to_y', 'to_address_street', 'to_address_number', 'to_address_city', 'to_name', 'to_number', 'to_city', 'to_address_accuracy', 'route_time', 'route_distance', 'route_walks_total_time', 'route_walks_total_distance', 'route_lines', 'departure_datetime', 'first_walk_time', 'first_walk_distance', 'first_stop_name', 'first_stop_code', 'last_stop_name', 'last_stop_code', 'last_walk_time', 'last_walk_distance', 'arrival_datetime']
 
-    FIELD_NAMES = ["fromid_toid", "MIN(at)", "MAX(at)", "MIN(date)", "MAX(date)", "count", "from id", "from x", "from y", "from address street", "from address number", "from address city", "to id", "to x", "to y", "to address street", "to address number", "to address city", "AVG(route time)", "AVG(route distance)", "AVG(start walking time)", "AVG(end walking time)", "AVG(route walks total time)", "AVG(start walking distance)", "AVG(end walking distance)", "AVG(route walks total distance)", "AVG(swaps)", "used bus", "used tram", "used subway", "used ferry"]
+    FIELD_NAMES = ["fromid_toid", "MIN(at)", "MAX(at)", "MIN(date)", "MAX(date)", "count", "from id", "from x", "from y", "from address street", "from address number", "from address city", "to id", "to x", "to y", "to address street", "to address number", "to address city", "AVG(route time)", "AVG(total route time)", "AVG(route distance)", "AVG(start walking time)", "AVG(end walking time)", "AVG(route walks total time)", "AVG(start walking distance)", "AVG(end walking distance)", "AVG(route walks total distance)", "AVG(swaps)", "used bus", "used tram", "used subway", "used ferry"]
 
-    FIELDS = ["fromid_toid", "min_at", "max_at", "min_date", "max_date", "count", "from_id", "from_x", "from_y", "from_address_street", "from_address_number", "from_address_city", "to_id", "to_x", "to_y", "to_address_street", "to_address_number", "to_address_city", "avg_route_time", "avg_route_distance", "avg_start_walking_time", "avg_end_walking_time", "avg_route_walks_total_time", "avg_start_walking_distance", "avg_end_walking_distance", "avg_route_walks_total_distance", "avg_swaps", "used_bus", "used_tram", "used_subway", "used_ferry"]
+    FIELDS = ["fromid_toid", "min_at", "max_at", "min_date", "max_date", "count", "from_id", "from_x", "from_y", "from_address_street", "from_address_number", "from_address_city", "to_id", "to_x", "to_y", "to_address_street", "to_address_number", "to_address_city", "avg_route_time", "avg_total_route_time", "avg_route_distance", "avg_start_walking_time", "avg_end_walking_time", "avg_route_walks_total_time", "avg_start_walking_distance", "avg_end_walking_distance", "avg_route_walks_total_distance", "avg_swaps", "used_bus", "used_tram", "used_subway", "used_ferry"]
 
   end
   
