@@ -1,3 +1,34 @@
+module Reittihaku
+
+# Transport types:
+# 1 Helsinki/bus
+# 2 Helsinki/tram
+# 3 Espoo internal
+# 4 Vantaa internal
+# 5 Regional traffic
+# 6 Metro traffic
+# 7 Ferry
+# 8 U-lines
+# 9 Other local traffic
+# 10 Long-distance traffic
+# 11 Express
+# 12 VR local traffic
+# 13 VR long-distance traffic
+# 14 All
+# 21 Helsinki service lines
+# 22 Helsinki night traffic
+# 23 Espoo service lines
+# 24 Vantaa service lines
+# 25 Regional night traffic
+# (types 9,10,11,13,14 are not used in the data)
+
+  BUS_TYPES = [1,3,4,5,8,22,25]
+  TRAM_TYPES = [2]
+  METRO_TYPES = [6]
+  FERRY_TYPES = [7]
+
+end
+
 module Reittihaku::ROUTING
   
   # Make searches at following times (HHMM)

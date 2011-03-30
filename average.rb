@@ -7,9 +7,12 @@ class << Hash
   end
 end
 
+def average_arr array
+  array.inject {|sum, el| sum + el} / array.size
+end
+
 def average field_name, values
-  formatted_values = values.map {|r| r[field_name].to_f}
-  "%.3f" % (formatted_values.inject {|sum, el| sum + el} / formatted_values.size)
+  "%.3f" % average_arr(values.map {|r| r[field_name].to_f})
 end
 
 reittiopas = Reittiopas.new(:username => Reittihaku::USER, :password => Reittihaku::PASS)
@@ -34,7 +37,7 @@ output_file.write(header)
 data = Hash.new
 
 input_rows.each do |row|
-  values = Hash.create Reittihaku::AVERAGE::INPUT_FIELDS.map {|k| k.to_sym}, row.split(';')
+  values = Hash.create Reittihaku::AVERAGE::INPUT_FIELDS.map {|k| k.to_sym} + [:rest], row.split(';', Reittihaku::AVERAGE::INPUT_FIELDS.size+1)
 
   data_id = values[:fromid_toid]
 
@@ -77,11 +80,27 @@ data.each_pair do |k,v|
   result_hash[:avg_start_walking_distance] = average :first_walk_distance, v
   result_hash[:avg_end_walking_distance] = average :last_walk_distance, v
   result_hash[:avg_route_walks_total_distance] = average :route_walks_total_distance, v
-  avg_swaps = nil
-  used_bus = nil
-  used_tram = nil
-  used_subway = nil
-  used_ferry = nil
+
+  result_hash[:avg_swaps] = average_arr(v.map {|r| r[:route_lines].to_i-1}).to_i
+  result_hash[:used_bus] = false
+  result_hash[:used_tram] = false
+  result_hash[:used_metro] = false
+  result_hash[:used_ferry] = false
+
+  parts = v.map {|r| r[:rest].split(";")}.flatten
+  parts.each_with_index do |part, i|
+    next unless part == "LINE"
+    type_id = parts[i+2].to_i
+    if Reittihaku::BUS_TYPES.include? type_id
+      result_hash[:used_bus] = true
+    elsif Reittihaku::TRAM_TYPES.include? type_id
+      result_hash[:used_tram] = true
+    elsif Reittihaku::METRO_TYPES.include? type_id
+      result_hash[:used_metro] = true
+    elsif Reittihaku::FERRY_TYPES.include? type_id
+      result_hash[:used_ferry] = true
+    end
+  end
 
   results.push result_hash
 end
