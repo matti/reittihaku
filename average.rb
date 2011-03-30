@@ -72,7 +72,7 @@ data.each_pair do |k,v|
   result_hash[:count] = v.length
 
   result_hash[:avg_route_time] = average :route_time, v
-  result_hash[:avg_total_route_time] = average :total_route_times, v
+  result_hash[:avg_total_route_time] = average :total_route_time, v
   result_hash[:avg_route_distance] = average :route_distance, v
   result_hash[:avg_start_walking_time] = average :first_walk_time, v
   result_hash[:avg_end_walking_time] = average :last_walk_time, v

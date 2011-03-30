@@ -70,6 +70,11 @@ at_times.each do |at|
       route_index = route_index + 1
       
       line = ""
+
+      arrival_datetime = route.parts.last.arrival.date_time
+      total_route_time = (
+        (arrival_datetime.strftime("%H").to_i*3600+arrival_datetime.strftime("%M").to_i*60+arrival_datetime.strftime("%S").to_i) - (at[0..1].to_i*3600+at[2..3].to_i*60)
+      ).to_f/60
     
       fields = eval "[#{Reittihaku::ROUTING::FIELDS}]"    
       summary_fields = eval "[#{Reittihaku::ROUTING::SUMMARY_FIELDS}]"

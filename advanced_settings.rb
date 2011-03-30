@@ -50,6 +50,7 @@ module Reittihaku
                    "to x", "to y",
                    "to address street", "to address number", "to address city",
                    "to address accuracy",
+                   "total route time",
                    "route time",
                    "route distance",
                    "route walks total time",
@@ -65,6 +66,7 @@ module Reittihaku
               to.address.street, to.address.number, to.address.city,
               to.name, to.number, to.city,
               to.address.accuracy,
+              total_route_time, 
               route.time,
               route.distance,
               route.walks_total_time,
@@ -125,7 +127,7 @@ module Reittihaku
 
   module AVERAGE
 
-    INPUT_FIELDS = ['from_id', 'to_id', 'fromid_toid', 'route_index', 'at', 'from_x', 'from_y', 'from_address_street', 'from_address_number', 'from_address_city', 'from_name', 'from_number', 'from_city', 'from_address_accuracy', 'to_x', 'to_y', 'to_address_street', 'to_address_number', 'to_address_city', 'to_name', 'to_number', 'to_city', 'to_address_accuracy', 'route_time', 'route_distance', 'route_walks_total_time', 'route_walks_total_distance', 'route_lines', 'departure_datetime', 'first_walk_time', 'first_walk_distance', 'first_stop_name', 'first_stop_code', 'last_stop_name', 'last_stop_code', 'last_walk_time', 'last_walk_distance', 'arrival_datetime']
+    INPUT_FIELDS = ['from_id', 'to_id', 'fromid_toid', 'route_index', 'at', 'from_x', 'from_y', 'from_address_street', 'from_address_number', 'from_address_city', 'from_name', 'from_number', 'from_city', 'from_address_accuracy', 'to_x', 'to_y', 'to_address_street', 'to_address_number', 'to_address_city', 'to_name', 'to_number', 'to_city', 'to_address_accuracy', 'total_route_time', 'route_time', 'route_distance', 'route_walks_total_time', 'route_walks_total_distance', 'route_lines', 'departure_datetime', 'first_walk_time', 'first_walk_distance', 'first_stop_name', 'first_stop_code', 'last_stop_name', 'last_stop_code', 'last_walk_time', 'last_walk_distance', 'arrival_datetime']
 
     FIELD_NAMES = ["fromid_toid", "MIN(at)", "MAX(at)", "MIN(date)", "MAX(date)", "count", "from id", "from x", "from y", "from address street", "from address number", "from address city", "to id", "to x", "to y", "to address street", "to address number", "to address city", "AVG(route time)", "AVG(total route time)", "AVG(route distance)", "AVG(start walking time)", "AVG(end walking time)", "AVG(route walks total time)", "AVG(start walking distance)", "AVG(end walking distance)", "AVG(route walks total distance)", "AVG(swaps)", "used bus", "used tram", "used metro", "used ferry"]
 
