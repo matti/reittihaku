@@ -72,8 +72,14 @@ at_times.each do |at|
       line = ""
 
       arrival_datetime = route.parts.last.arrival.date_time
+      arrival_date = arrival_datetime.strftime "%Y%m%d"
+      arrival_time = arrival_datetime.strftime("%H").to_i*3600+arrival_datetime.strftime("%M").to_i*60+arrival_datetime.strftime("%S").to_i
+
+      at_time = (at[0..1].to_i*3600+at[2..3].to_i*60)
+      at_time -= 24*3600 if routing_options.key? "date" and arrival_date != routing_options["date"] or Time.now.strftime("%Y%m%d") != arrival_date
+
       total_route_time = (
-        (arrival_datetime.strftime("%H").to_i*3600+arrival_datetime.strftime("%M").to_i*60+arrival_datetime.strftime("%S").to_i) - (at[0..1].to_i*3600+at[2..3].to_i*60)
+        arrival_time - at_time
       ).to_f/60
     
       fields = eval "[#{Reittihaku::ROUTING::FIELDS}]"    
