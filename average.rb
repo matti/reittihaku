@@ -1,128 +1,92 @@
 require 'rubygems'
 require 'lib/reittihaku'
 
+class << Hash
+  def create(keys, values)
+    self[*keys.zip(values).flatten]
+  end
+end
+
 reittiopas = Reittiopas.new(:username => Reittihaku::USER, :password => Reittihaku::PASS)
 
-from_location_lines_filename = ARGV[0]
-to_location_lines_filename = ARGV[1]
-output_filename = ARGV[2]
+input_filename = ARGV[0]
+output_filename = ARGV[1]
 
-raise "USAGE: ruby average.rb from_locations.txt to_locations.txt output.txt" unless from_location_lines_filename && to_location_lines_filename && output_filename &&
-                                                                                     File.exists?(from_location_lines_filename) && File.exists?(to_location_lines_filename)
+raise "USAGE: ruby average.rb input.txt output.txt" unless input_filename && output_filename && File.exists?(input_filename)
 
-from_location_lines = File.read(from_location_lines_filename)
-to_location_lines = File.read(to_location_lines_filename)
+input_lines = File.read(input_filename)
 
-from_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(from_location_lines)
-to_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(to_location_lines)
+input_rows = input_lines.map { |line| line }
 
-from_locations = from_location_lines.map { |from| Reittihaku::Location::Builder.build(from) }
-to_locations = to_location_lines.map { |to| Reittihaku::Location::Builder.build(to) }
+input_rows.shift # remove header
 
-at_times = Reittihaku::AVERAGE::AT_TIMES
-average_options = Reittihaku::AVERAGE::OPTIONS.delete_if { |k,v| v.nil? }
 
 output_file = File.open(output_filename, "w")
 
-no_routes = []
+header = Reittihaku::AVERAGE::FIELD_NAMES.join(";") + "\n"
+output_file.write(header)
 
-from_locations.each do |from|
-to_locations.each do |to|
-at_times.each do |at|
+data = Hash.new
 
-    average_options.merge!({"time" => at})
+input_rows.each do |row|
+  values = Hash.create Reittihaku::AVERAGE::INPUT_FIELDS.map {|k| k.to_sym}, row.split(';')
 
-    debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string}) at #{at}")
+  data_id = values[:fromid_toid]
 
-    retries = 0
-    begin
-      routes = reittiopas.routing(from.location, to.location, average_options)
-    rescue Timeout::Error
-      debug("timeout")
-      retry
-    rescue Reittiopas::AccessError
-      raise "invalid credentials"
-    rescue
-      debug("some network problems occured, lets try again ...")
-      if retries < 10
-        sleep 5
-        retries +=1
-        retry
-      else
-        raise "network was down or unreachable"
-      end
-    end
-
-    if routes.size == 0
-      no_routes << [from, to, at]
-
-      failed_fields = eval("[#{Reittihaku::AVERAGE::FIELDS_FAILED}]")
-      output_file.write(failed_fields.join(";")+"\n")
-      next
-    end
-
-    routes_found = routes.count
-
-    date = if average_options[:date]
-      average_options[:date]
-    else
-      Date.today
-    end
-    time = at
-    total_walking = 0
-    total_changes = 0
-    total_vehicle_types = 0
-
-    routes.each_with_index do |route, route_index|
-      route_vehicle_types = []
-      route_index = route_index + 1
-
-      route.parts.each_with_index do |part,i|
-        # First walk is never included as part
-        next if part.is_a?(Reittiopas::Routing::Walk) && i == 0 || i == route.parts.size-1
-
-        if part.is_a?(Reittiopas::Routing::Walk)
-          total_walking += part.time
-        end
-
-        if part.is_a?(Reittiopas::Routing::Line)
-          total_changes += 1
-          route_vehicle_types << part.line_type unless route_vehicle_types.include? part.line_type
-        end
-
-      end
-
-      total_vehicle_types += route_vehicle_types.count
-
-    end
-
-    walking = (total_walking/routes_found)
-    changes = ((total_changes-1)/routes_found)
-    vehicle_types = (total_vehicle_types/routes_found)
-
-    # from, to, date, time, average walking time, average amount of changes, average amount of different vehicles
-    all_fields = [from.address.to_search_string, to.address.to_search_string, date, time, walking, changes, vehicle_types]
-
-    output_file.write(all_fields.join(";") + "\n")
-
+  data[data_id] = Array.new if data[data_id].nil?
+  data[data_id].push values
 end
+
+
+results = Array.new
+
+data.each_pair do |k,v|
+  result_hash = Hash.new
+
+  # copy static fields
+  [:fromid_toid, :from_id, :from_x, :from_y, :from_address_street,
+   :from_address_number, :from_address_city, :to_id, :to_x, :to_y,
+   :to_address_street, :to_address_number, :to_address_city].each do |key|
+    result_hash[key] = v.first[key]
+  end
+
+
+  ats = v.map {|r| r[:at]}
+  min_at = ats.min
+  max_at = ats.max
+  result_hash[:min_at] = "#{min_at[0..1]}:#{min_at[2..3]}"
+  result_hash[:max_at] = "#{max_at[0..1]}:#{max_at[2..3]}"
+
+  dates = v.map {|r| DateTime.parse(r[:departure_datetime])}
+  result_hash[:min_date] = dates.min.strftime "%Y-%m-%d"
+  result_hash[:max_date] = dates.max.strftime "%Y-%m-%d"
+
+  result_hash[:count] = v.length
+
+  avg_route_time = nil
+  avg_route_distance = nil
+  avg_start_walking_time = nil
+  avg_end_walking_time = nil
+  avg_route_walks_total_time = nil
+  avg_start_walking_distance = nil
+  avg_end_walking_distance = nil
+  avg_route_walks_total_distance = nil
+  avg_swaps = nil
+  used_bus = nil
+  used_tram = nil
+  used_subway = nil
+  used_ferry = nil
+
+  results.push result_hash
 end
+
+results.each do |row|
+
+
+  fields = Reittihaku::AVERAGE::FIELDS.map{|v| eval "row[:#{v.to_sym}]"}
+  output_file.write(fields.join(';') + "\n")
+
 end
 
 
 output_file.close
-
-puts "\n\n"
-puts "No Routes"
-puts "-"*80
-
-no_routes.each do |from_to_at|
-  from, to, at = from_to_at
-
-  puts "from: #{from.address.to_search_string} to: #{to.address.to_search_string} at #{at}"
-end
-
-puts "\n\nTotal: #{no_routes.size}"
-puts "\n\n"
-puts "-"*80
-puts "DONE"
