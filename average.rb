@@ -1,21 +1,9 @@
 require 'rubygems'
 require 'lib/reittihaku'
 
-class << Hash
-  def create(keys, values)
-    self[*keys.zip(values).flatten]
-  end
-end
-
-def average_arr array
-  array.inject {|sum, el| sum + el} / array.size
-end
-
 def average field_name, values
-  "%.3f" % average_arr(values.map {|r| r[field_name].to_f})
+  "%.3f" % values.map {|r| r[field_name].to_f}.avg
 end
-
-reittiopas = Reittiopas.new(:username => Reittihaku::USER, :password => Reittihaku::PASS)
 
 input_filename = ARGV[0]
 output_filename = ARGV[1]
@@ -34,19 +22,19 @@ output_file = File.open(output_filename, "w")
 header = Reittihaku::AVERAGE::FIELD_NAMES.join(";") + "\n"
 output_file.write(header)
 
-data = Hash.new
+data = {}
 
 input_rows.each do |row|
   values = Hash.create Reittihaku::AVERAGE::INPUT_FIELDS.map {|k| k.to_sym} + [:rest], row.split(';', Reittihaku::AVERAGE::INPUT_FIELDS.size+1)
 
   data_id = values[:fromid_toid]
 
-  data[data_id] = Array.new if data[data_id].nil?
-  data[data_id].push values
+  data[data_id] = [] unless data[data_id]
+  data[data_id] << values
 end
 
 
-results = Array.new
+results = []
 
 data.each_pair do |k,v|
   result_hash = Hash.new
@@ -60,14 +48,12 @@ data.each_pair do |k,v|
 
 
   ats = v.map {|r| r[:at]}
-  min_at = ats.min
-  max_at = ats.max
-  result_hash[:min_at] = "#{min_at[0..1]}:#{min_at[2..3]}"
-  result_hash[:max_at] = "#{max_at[0..1]}:#{max_at[2..3]}"
+  result_hash[:min_at] = ats.min
+  result_hash[:max_at] = ats.max
 
   dates = v.map {|r| DateTime.parse(r[:departure_datetime])}
-  result_hash[:min_date] = dates.min.strftime "%Y-%m-%d"
-  result_hash[:max_date] = dates.max.strftime "%Y-%m-%d"
+  result_hash[:min_date] = dates.min.to_date_s
+  result_hash[:max_date] = dates.max.to_date_s
 
   result_hash[:count] = v.length
 
@@ -81,7 +67,7 @@ data.each_pair do |k,v|
   result_hash[:avg_end_walking_distance] = average :last_walk_distance, v
   result_hash[:avg_route_walks_total_distance] = average :route_walks_total_distance, v
 
-  result_hash[:avg_swaps] = average_arr(v.map {|r| r[:route_lines].to_i-1}).to_i
+  result_hash[:avg_swaps] = v.map {|r| r[:route_lines].to_i-1}.avg.to_i
   result_hash[:used_bus] = false
   result_hash[:used_tram] = false
   result_hash[:used_metro] = false
@@ -102,7 +88,7 @@ data.each_pair do |k,v|
     end
   end
 
-  results.push result_hash
+  results << result_hash
 end
 
 results.each do |row|

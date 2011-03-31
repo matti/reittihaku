@@ -23,4 +23,20 @@ class DateTime
   def to_s
     strftime('%Y-%m-%d %H:%M:%S')
   end
+
+  def to_date_s
+    strftime('%Y-%m-%d')
+  end
+end
+
+class Hash
+  def self.create(keys, values)
+    self[*keys.zip(values).flatten]
+  end
+end
+
+class Array
+  def avg
+    self.inject {|sum, el| sum + el} / self.size
+  end
 end
