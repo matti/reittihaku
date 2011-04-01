@@ -1,1 +1,2 @@
+id;resolved x;resolved y;query street;query street number;query street city;resolved name;resolved street number;resolved city;accuracy;type;code;category;latitude;longitude
 2;2548199;6677769;ulvilantie;19;helsinki;ulvilantie;19;helsinki;1;900;;street;60.20861;24.86607;

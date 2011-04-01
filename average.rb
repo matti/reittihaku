@@ -12,7 +12,7 @@ raise "USAGE: ruby average.rb input.txt output.txt" unless input_filename && out
 
 input_lines = File.read(input_filename)
 
-input_rows = input_lines.map { |line| line }
+input_rows = input_lines.split("\n")
 
 input_rows.shift # remove header
 
