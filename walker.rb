@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'lib/reittihaku'
-require 'walker_settings'
+
 
 reittiopas = Reittiopas.new(:username => Reittihaku::USER, :password => Reittihaku::PASS)
 

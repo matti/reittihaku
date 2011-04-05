@@ -2,3 +2,6 @@
 Gemfile.lock
 username
 password
+settings.rb
+advanced_settings.rb
+walker_settings.rb
