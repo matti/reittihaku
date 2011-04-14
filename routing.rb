@@ -37,8 +37,8 @@ output_file.write(header)
 
 no_routes = []
 
-from_locations.each do |from|
 to_locations.each do |to|
+from_locations.each do |from|
 at_times.each do |at|
 
     routing_options.merge!({"time" => at})
