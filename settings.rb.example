@@ -46,7 +46,7 @@ module Reittihaku::ROUTING
     "optimize" => nil,    # 1=default, 2=fastest, 3=least transfers, 4=least walking
     "margin" => nil,      # 3 minutes as default. Allowed values  are 0-10
     "penalty" => nil,     # 5 minutes as default. Allowed values 1-99.
-    "walkspeed" => nil,   # 1=slow (30 m/min), 2=fast (70 m/min), 3=normal (100 m/min), 4=running (200 m/min), 5=cycling (300 m/min)
+    "walkspeed" => nil,   # 1=slow (30 m/min), 2=normal (70 m/min), 3=fast (100 m/min), 4=running (200 m/min), 5=cycling (300 m/min)
     "show" => 5,          # Allowed values 1/3/5
     "use_bus" => nil,     # 1 = use, 0 = do not use
     "use_train" => nil,
