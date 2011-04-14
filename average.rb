@@ -29,6 +29,8 @@ input_rows.each do |row|
 
   data_id = values[:fromid_toid]
 
+  next if data_id == "NO ROUTE"
+
   data[data_id] = [] unless data[data_id]
   data[data_id] << values
 end
@@ -38,6 +40,7 @@ results = []
 
 data.each_pair do |k,v|
   result_hash = Hash.new
+
 
   # copy static fields
   [:fromid_toid, :from_id, :from_x, :from_y, :from_address_street,
