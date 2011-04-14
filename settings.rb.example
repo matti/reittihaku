@@ -26,6 +26,7 @@ module Reittihaku
   TRAM_TYPES = [2]
   METRO_TYPES = [6]
   FERRY_TYPES = [7]
+  TRAIN_TYPES = [12,13]
 
 end
 

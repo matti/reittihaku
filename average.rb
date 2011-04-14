@@ -74,6 +74,7 @@ data.each_pair do |k,v|
   result_hash[:used_tram] = false
   result_hash[:used_metro] = false
   result_hash[:used_ferry] = false
+  result_hash[:used_train] = false
 
   parts = v.map {|r| r[:rest].split(";")}.flatten
   parts.each_with_index do |part, i|
@@ -87,6 +88,8 @@ data.each_pair do |k,v|
       result_hash[:used_metro] = true
     elsif Reittihaku::FERRY_TYPES.include? type_id
       result_hash[:used_ferry] = true
+    elsif Reittihaku::TRAIN_TYPES.include? type_id
+      result_hash[:used_train] = true
     end
   end
 
