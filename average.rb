@@ -67,7 +67,9 @@ data.each_pair do |k,v|
   result_hash[:avg_end_walking_distance] = average :last_walk_distance, v
   result_hash[:avg_route_walks_total_distance] = average :route_walks_total_distance, v
 
-  result_hash[:avg_swaps] = v.map {|r| r[:route_lines].to_i-1}.avg.to_i
+  avg_swaps = v.map {|r| r[:route_lines].to_i-1}.avg.to_i
+  avg_swaps= 0 if avg_swaps < 0
+  result_hash[:avg_swaps] = avg_swaps
   result_hash[:used_bus] = false
   result_hash[:used_tram] = false
   result_hash[:used_metro] = false
