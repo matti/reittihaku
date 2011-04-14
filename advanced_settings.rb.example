@@ -49,6 +49,7 @@ module Reittihaku
                    "from address accuracy",
                    "to x", "to y",
                    "to address street", "to address number", "to address city",
+                   "to location name", "to location number", "to location city",
                    "to address accuracy",
                    "total route time",
                    "route time",
