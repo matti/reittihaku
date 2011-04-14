@@ -116,6 +116,10 @@ module Reittihaku
                    part_fields << part.line_type
                    part_fields << part.stops.first.departure.date_time.to_s
                    part_fields << part.distance'
+
+    # Routing data titles
+    DUMMY_TITLES_MAX = 30
+    DUMMY_TITLES = (1..DUMMY_TITLES_MAX).map {|i| "routing_#{i}"}
   
   end
 

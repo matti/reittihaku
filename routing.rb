@@ -31,7 +31,7 @@ at_times = Reittihaku::ROUTING::AT_TIMES
 routing_options = Reittihaku::ROUTING::OPTIONS.delete_if { |k,v| v.nil? }
 
 output_file = File.open(output_filename, "w")
-header = ( Reittihaku::ROUTING::FIELD_NAMES + Reittihaku::ROUTING::SUMMARY_FIELD_NAMES ).join(";") + "\n"
+header = ( Reittihaku::ROUTING::FIELD_NAMES + Reittihaku::ROUTING::SUMMARY_FIELD_NAMES + Reittihaku::ROUTING::DUMMY_TITLES).join(";") + "\n"
 output_file.write(header)
 
 
