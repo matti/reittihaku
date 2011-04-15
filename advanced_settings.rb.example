@@ -119,7 +119,6 @@ module Reittihaku
 
     # Routing data titles
     DUMMY_TITLES_MAX = 30
-    DUMMY_TITLES = (1..DUMMY_TITLES_MAX).map {|i| "routing_#{i}"}
   
   end
 
