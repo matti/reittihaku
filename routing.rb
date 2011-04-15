@@ -79,15 +79,16 @@ at_times.each do |at|
       line = ""
 
       arrival_datetime = route.parts.last.arrival.date_time
-      arrival_date = arrival_datetime.strftime "%Y%m%d"
-      arrival_time = arrival_datetime.strftime("%H").to_i*3600+arrival_datetime.strftime("%M").to_i*60+arrival_datetime.strftime("%S").to_i
 
-      at_time = (at[0..1].to_i*3600+at[2..3].to_i*60)
-      at_time -= 24*3600 if routing_options.key? "date" and arrival_date != routing_options["date"] or Time.now.strftime("%Y%m%d") != arrival_date
+      departure_time = "#{at[0..1]}:#{at[2..3]}"
+      if routing_options.key? 'date'
+        departure_date = routing_options['date']
+      else
+        departure_date = Date.today
+      end
+      departure_datetime = DateTime.parse "#{departure_date} #{departure_time}"
 
-      total_route_time = (
-        arrival_time - at_time
-      ).to_f/60
+      total_route_time = (arrival_datetime - departure_datetime).to_f*24*60 # DateTime-DateTime return difference in days and we want minutes
     
       fields = eval "[#{Reittihaku::ROUTING::FIELDS}]"    
       summary_fields = eval "[#{Reittihaku::ROUTING::SUMMARY_FIELDS}]"
