@@ -33,8 +33,9 @@ no_routes = []
 
 route_index = 1
 
-from_locations.each do |from|
+
 to_locations.each do |to|
+from_locations.each do |from|
     debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string})")
     
     retries = 0
