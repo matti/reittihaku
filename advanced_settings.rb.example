@@ -118,7 +118,7 @@ module Reittihaku
                    part_fields << part.distance'
 
     # Routing data titles
-    DUMMY_TITLES_MAX = 30
+    DUMMY_TITLES_MAX = 60
   
   end
 
