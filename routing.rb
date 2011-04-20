@@ -78,15 +78,23 @@ at_times.each do |at|
       
       line = ""
 
-      arrival_datetime = route.parts.last.arrival.date_time
 
-      departure_time = "#{at[0..1]}:#{at[2..3]}"
       if routing_options.key? 'date'
-        departure_date = routing_options['date']
+        second_date = routing_options['date']
       else
-        departure_date = Date.today
+        second_date = Date.today
       end
-      departure_datetime = DateTime.parse "#{departure_date} #{departure_time}"
+
+      second_time = "#{at[0..1]}:#{at[2..3]}"
+      second_datetime = DateTime.parse "#{second_date} #{second_time}"
+
+      if routing_options['timemode'] == 1
+        arrival_datetime = route.parts.last.arrival.date_time
+        departure_datetime = second_datetime
+      else
+        arrival_datetime = second_datetime
+        departure_datetime = route.parts.first.departure.date_time
+      end
 
       total_route_time = (arrival_datetime - departure_datetime).to_f*24*60 # DateTime-DateTime return difference in days and we want minutes
     
