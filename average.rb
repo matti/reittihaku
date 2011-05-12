@@ -29,7 +29,7 @@ input_rows.each do |row|
 
   data_id = values[:fromid_toid]
 
-  next if data_id == "NO ROUTE"
+  next if data_id.strip == "NO ROUTE"
 
   data[data_id] = [] unless data[data_id]
   data[data_id] << values
