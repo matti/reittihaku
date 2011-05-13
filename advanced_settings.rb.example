@@ -39,7 +39,8 @@ module Reittihaku
   module ROUTING
 
     # Columns if no route was found
-    FIELDS_FAILED = 'from.address.id, to.address.id, "NO ROUTE"'
+    # FIELDS_FAILED = 'from.address.id, to.address.id, "NO ROUTE"'
+    FIELDS_FAILED = 'from.address.id, to.address.id, at, from.x, from.y, nil, nil, nil, nil, nil, nil, nil, to.x, to.y, "NO ROUTE"'
 
     # The first columns
     FIELD_NAMES = ["from id", "to id", "fromid_toid", "route number", "at",
