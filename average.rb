@@ -25,6 +25,9 @@ output_file.write(header)
 data = {}
 
 input_rows.each do |row|
+  row.gsub! /^"/, ''
+  row.gsub! /";"|";|;"/, ';'
+  row.gsub! /"$/, ''
   values = Hash.create Reittihaku::AVERAGE::INPUT_FIELDS.map {|k| k.to_sym} + [:rest], row.split(';', Reittihaku::AVERAGE::INPUT_FIELDS.size+1)
 
   data_id = values[:fromid_toid]
@@ -92,7 +95,7 @@ data.each_pair do |k,v|
 
   parts = v.map {|r| r[:rest].split(";")}.flatten
   parts.each_with_index do |part, i|
-    next unless part.gsub('"','').strip == "LINE"
+    next unless part == "LINE"
     type_id = parts[i+2].to_i
     if Reittihaku::BUS_TYPES.include? type_id
       result_hash[:used_bus] = true
