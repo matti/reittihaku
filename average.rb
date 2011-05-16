@@ -92,7 +92,7 @@ data.each_pair do |k,v|
 
   parts = v.map {|r| r[:rest].split(";")}.flatten
   parts.each_with_index do |part, i|
-    next unless part == "LINE"
+    next unless part.gsub('"','').strip == "LINE"
     type_id = parts[i+2].to_i
     if Reittihaku::BUS_TYPES.include? type_id
       result_hash[:used_bus] = true
