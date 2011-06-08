@@ -15,6 +15,9 @@ raise "USAGE: ruby walker.rb from_locations.txt to_locations.txt output.txt" unl
 from_location_lines = File.read(from_location_lines_filename)
 to_location_lines = File.read(to_location_lines_filename)
 
+from_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(from_location_lines)
+to_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(to_location_lines)
+
 from_location_lines = from_location_lines.split("\n")
 to_location_lines = to_location_lines.split("\n")
 
@@ -22,8 +25,6 @@ to_location_lines = to_location_lines.split("\n")
 from_location_lines.shift
 to_location_lines.shift
 
-from_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(from_location_lines)
-to_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(to_location_lines)
 
 from_locations = from_location_lines.map { |from| Reittihaku::Location::Builder.build(from) }
 to_locations = to_location_lines.map { |to| Reittihaku::Location::Builder.build(to) }
