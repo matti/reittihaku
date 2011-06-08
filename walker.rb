@@ -15,6 +15,9 @@ raise "USAGE: ruby walker.rb from_locations.txt to_locations.txt output.txt" unl
 from_location_lines = File.read(from_location_lines_filename)
 to_location_lines = File.read(to_location_lines_filename)
 
+from_location_lines = from_location_lines.split("\n")
+to_location_lines = to_location_lines.split("\n")
+
 # Remove header lines
 from_location_lines.shift
 to_location_lines.shift
