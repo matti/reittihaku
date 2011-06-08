@@ -15,6 +15,10 @@ raise "USAGE: ruby walker.rb from_locations.txt to_locations.txt output.txt" unl
 from_location_lines = File.read(from_location_lines_filename)
 to_location_lines = File.read(to_location_lines_filename)
 
+# Remove header lines
+from_location_lines.shift
+to_location_lines.shift
+
 from_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(from_location_lines)
 to_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(to_location_lines)
 
