@@ -36,6 +36,7 @@ route_index = 1
 
 to_locations.each do |to|
 from_locations.each do |from|
+    at = Reittihaku::WALKER::OPTIONS["time"] || Time.now.strftime("%H%M")
     debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string})")
     
     retries = 0
