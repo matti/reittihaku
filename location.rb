@@ -10,6 +10,10 @@ raise "USAGE: ruby location.rb address_file.txt resolved_file.txt" unless addres
                                                                           File.exists?(address_lines_filename)
 
 address_lines = File.read(address_lines_filename)
+address_lines = address_lines.split("\n")
+address_lines.shift
+
+
 resolved_file = File.new(resolved_file_filename, "w")
 header = Reittihaku::LOCATING::FIELD_NAMES.join(";") + "\n"
 resolved_file.write(header)
