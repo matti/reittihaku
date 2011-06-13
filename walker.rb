@@ -18,6 +18,14 @@ to_location_lines = File.read(to_location_lines_filename)
 from_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(from_location_lines)
 to_location_lines = Reittihaku::Location::Sanitizer.latin1_to_utf8(to_location_lines)
 
+from_location_lines = from_location_lines.split("\n")
+to_location_lines = to_location_lines.split("\n")
+
+# Remove header lines
+from_location_lines.shift
+to_location_lines.shift
+
+
 from_locations = from_location_lines.map { |from| Reittihaku::Location::Builder.build(from) }
 to_locations = to_location_lines.map { |to| Reittihaku::Location::Builder.build(to) }
 
@@ -36,6 +44,7 @@ route_index = 1
 
 to_locations.each do |to|
 from_locations.each do |from|
+    at = Reittihaku::WALKER::OPTIONS["time"] || Time.now.strftime("%H%M")
     debug("routing #{from.address.id} (#{from.address.to_search_string}) to #{to.address.id} (#{to.address.to_search_string})")
     
     retries = 0
