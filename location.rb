@@ -10,6 +10,7 @@ raise "USAGE: ruby location.rb address_file.txt resolved_file.txt" unless addres
                                                                           File.exists?(address_lines_filename)
 
 address_lines = File.read(address_lines_filename)
+address_lines.gsub!(/"/,"") # remove all "
 address_lines = address_lines.split("\n")
 address_lines.shift
 
